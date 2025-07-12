@@ -15,6 +15,11 @@ app.get('/', (req, res) => {
   res.send('LHB App API running...');
 });
 
+// Import routes
+const userRoutes = require('./routes/user.routes');
+app.use('/api/users', userRoutes);
+
+
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGO_URI)
