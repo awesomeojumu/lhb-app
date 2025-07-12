@@ -19,6 +19,11 @@ app.get('/', (req, res) => {
 const userRoutes = require('./routes/user.routes');
 app.use('/api/users', userRoutes);
 
+// Import KPI routes
+const kpiRoutes = require('./routes/kpi.routes');
+app.use('/api/kpis', kpiRoutes);
+
+
 
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
