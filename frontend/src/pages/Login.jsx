@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import api from '../services/api';
 import {
   Container,
   Typography,
@@ -29,25 +30,16 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+      const res = await api.post('/auth/login', form);
+      const { user, token } = res.data;
 
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {
-        // Handles empty or malformed response
-      }
-
-      if (!res.ok) throw new Error(data.message || 'Login failed');
-
-      login(data.user, data.token);
+      login(user, token);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message);
+      const msg = err.response?.data?.message || 'Login failed';
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 

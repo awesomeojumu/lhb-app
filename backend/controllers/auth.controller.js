@@ -80,11 +80,11 @@ const loginUser = async (req, res) => {
 
     // 1. Find user by email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(400).json({ message: 'Username or Passsword is incorrect' });
 
     // 2. Compare the provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) return res.status(400).json({ message: 'Username or Passsword is incorrect' });
 
     // 3. Generate a JWT token for the user
     const token = generateToken(user);
