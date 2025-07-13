@@ -15,7 +15,6 @@ const mongoose = require('mongoose');
  * - ageBracket:          Age group of the user (enum).
  * - dateOfBirth:         User's date of birth (optional).
  * - battalion:           User's battalion assignment (enum).
- * - lhbLevel:            User's LHB level (enum).
  * - lhbCode:             Unique code for the user (optional).
  * - relationshipStatus:  Marital status (enum).
  * - weddingAnniversary:  Date of wedding anniversary (optional).
@@ -47,7 +46,7 @@ const userSchema = new mongoose.Schema({
   sex: { type: String, enum: ['Male', 'Female'] }, // Gender
   ageBracket: {
     type: String,
-    enum: ['Under 18', '18 - 24', '25 - 30', '31 - 35', '35 above'],
+    enum: ['18-25', '26-35', '36-45', '46-60', '60+'],
   }, // Age group
   dateOfBirth: Date, // Optional date of birth
 
@@ -55,10 +54,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['Alpha', 'Bravo', 'Charlie', 'Delta'],
   }, // Battalion assignment
-  lhbLevel: {
-    type: String,
-    enum: ['Email Community', 'Global Soldier', 'Special Force', 'Commando'],
-  }, // LHB level
   lhbCode: String, // Unique code for the user
 
   relationshipStatus: {
@@ -89,7 +84,7 @@ const userSchema = new mongoose.Schema({
 
   purposeStatus: {
     type: String,
-    enum: ['Yes', 'No', 'In Progress'],
+    enum: ['Discovered', 'Not Yet Discovered', 'In Progress'],
   }, // Purpose discovery status
   primaryMountain: String, // Primary mountain of influence
   secondaryMountain: String, // Secondary mountain of influence
