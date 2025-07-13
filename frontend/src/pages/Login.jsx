@@ -45,8 +45,12 @@ const Login = () => {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 10 }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        LHB Member Login
+      <Typography variant="h2" align="center" gutterBottom>
+        Welcome Soldier
+      </Typography>
+
+      <Typography variant="h6" align="center" gutterBottom>
+        We are Salt, We are light We are like Christ
       </Typography>
 
       {error && <Alert severity="error">{error}</Alert>}

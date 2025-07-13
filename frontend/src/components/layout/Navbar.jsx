@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext'; // ✅ Corrected path
 import {
   AppBar,
   Box,
@@ -14,13 +15,24 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuIcon from '@mui/icons-material/Menu';
+import logo from "../../assets/logo.jpg";
 
-const Navbar = ({ user, toggleSidebar }) => {
+
+
+const Navbar = ({ toggleSidebar }) => {
+  const { user } = useContext(AuthContext); // ✅ Access user from context
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const getInitials = (name) =>
-    name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '';
+    name
+      ? name
+          .split(' ')
+          .map((n) => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2)
+      : '';
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
@@ -42,20 +54,24 @@ const Navbar = ({ user, toggleSidebar }) => {
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <Toolbar sx={{ justifyContent: 'space-between' }}>
+        {/* Left: Sidebar toggle + title */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {/* Sidebar toggle button */}
           <IconButton onClick={toggleSidebar} edge="start" color="inherit">
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            LHB Battalion Dashboard
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <img src={logo} alt="LHB Logo" style={{ height: 40 }} />
+            <Typography variant="h6" sx={{ display: { xs: 'none', sm: 'block' } }}>
+              LHB Dashboard
+            </Typography>
+          </Box>
         </Box>
 
+        {/* Right: Avatar menu */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton onClick={handleMenuOpen} size="small" sx={{ ml: 2 }}>
             <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>
-              {getInitials(user?.name || 'User')}
+              {getInitials(user?.firstName || user?.name || 'U')}
             </Avatar>
           </IconButton>
           <Menu
@@ -68,7 +84,7 @@ const Navbar = ({ user, toggleSidebar }) => {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <Box sx={{ px: 2, py: 1 }}>
-              <Typography fontWeight="bold">{user?.name || 'Soldier'}</Typography>
+              <Typography fontWeight="bold">{user?.firstName || 'Soldier'}!</Typography>
               <Typography variant="body2" color="text.secondary">
                 {user?.role || 'Role'}
               </Typography>

@@ -18,13 +18,13 @@ import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ open }) => {
   const navigate = useNavigate();
-  const drawerWidth = open ? 240 : 72;
+  const drawerWidth = open ? 200 : 70;
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
-    { text: 'KPIs', icon: <AssignmentIcon />, path: '/kpis' },
-    { text: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
+    // { text: 'KPIs', icon: <AssignmentIcon />, path: '/kpis' },
+    // { text: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
   ];
 
   return (

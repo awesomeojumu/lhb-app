@@ -16,7 +16,10 @@ const Dashboard = () => {
         </Typography>
 
         <Typography variant="body2" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }} gutterBottom>
-          You are logged in as <strong>{user?.role}</strong>
+          We honour you,{' '}
+          <strong>
+            {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1).toLowerCase()}
+          </strong>
         </Typography>
 
         <Grid container spacing={3} sx={{ mt: 2 }}>
@@ -49,12 +52,6 @@ const Dashboard = () => {
             </Paper>
           </Grid>
         </Grid>
-
-        <Box sx={{ mt: { xs: 4, sm: 5 }, textAlign: { xs: 'center', sm: 'left' } }}>
-          <Button variant="outlined" onClick={logout}>
-            Logout
-          </Button>
-        </Box>
       </Box>
     </AppLayout>
   );
