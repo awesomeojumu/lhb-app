@@ -3,7 +3,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { getMe } = require('./controllers/user.controller');
+const { authenticate } = require('./middleware/auth.middleware');
+const router = express.Router();
+const dotenv = require('dotenv'); // Import dotenv to manage environment variables
 require('dotenv').config(); // Load environment variables from .env file
+
 
 const app = express();
 

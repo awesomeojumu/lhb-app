@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
       role,
       battalion,
       phone,
-      sex
+      sex,
     });
 
     await user.save();
@@ -65,10 +65,7 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (
-      requestingUser.role === 'commando' &&
-      userToDelete.role === 'commander'
-    ) {
+    if (requestingUser.role === 'commando' && userToDelete.role === 'commander') {
       return res.status(403).json({ message: 'Access denied: Cannot delete Commander' });
     }
 
@@ -126,9 +123,25 @@ const createUserByCommander = async (req, res) => {
   }
 };
 
+const getMe = async (req, res) => {
+  try {
+    const user = req.user; // Set by authenticate middleware
+    res.json({
+      id: user._id,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      role: user.role,
+      battalion: user.battalion,
+    });
+  } catch (err) {
+    console.error('GetMe error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 module.exports = {
   registerUser,
   deleteUser,
-  createUserByCommander
+  createUserByCommander,
+  getMe
 };
