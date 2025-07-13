@@ -23,12 +23,11 @@ const enums = {
   sex: ['Male', 'Female'],
   ageBracket: ['18-25', '26-35', '36-45', '46-60', '60+'],
   battalion: ['Alpha', 'Bravo', 'Charlie', 'Delta'],
-  lhbLevel: ['Level 1', 'Level 2', 'Level 3', 'Level 4'],
   relationshipStatus: ['Single', 'Married', 'Divorced', 'Widowed'],
   fiveFoldGift: ['Apostle', 'Prophet', 'Evangelist', 'Pastor', 'Teacher'],
-  education: ['None', 'Primary', 'Secondary', 'Tertiary'],
+  education: ['SSCE', 'OND', 'HND', 'Bachelors', 'Masters', 'PhD'],
   jobStatus: ['Unemployed', 'Employed', 'Self-employed', 'Student'],
-  purposeStatus: ['Discovered', 'Not Yet Discovered'],
+  purposeStatus: ['Discovered', 'Not Yet Discovered', 'In Progress'],
 };
 
 // Capitalize keys like "primaryMountain" → "Primary Mountain"

@@ -68,7 +68,7 @@ const Navbar = ({ user, toggleSidebar }) => {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <Box sx={{ px: 2, py: 1 }}>
-              <Typography fontWeight="bold">{user?.name || 'User Name'}</Typography>
+              <Typography fontWeight="bold">{user?.name || 'Soldier'}</Typography>
               <Typography variant="body2" color="text.secondary">
                 {user?.role || 'Role'}
               </Typography>
