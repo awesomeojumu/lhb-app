@@ -1,0 +1,24 @@
+{
+  // Format on save (force Prettier)
+  "editor.formatOnSave": true,
+
+  // Use Prettier globally
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Apply Prettier to these languages
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // Turn off other formatters
+  "eslint.format.enable": false,
+
+  // Optional: Show Prettier status in bottom bar
+  "prettier.enableDebugLogs": false
+}

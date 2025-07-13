@@ -1,34 +1,62 @@
-// SERVER 
+// SERVER ENTRY POINT
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
 
-// Middleware
+// =======================
+// Middleware Configuration
+// =======================
+
+// Enable Cross-Origin Resource Sharing (CORS) for all routes
 app.use(cors());
+
+// Parse incoming JSON requests and put the parsed data in req.body
 app.use(express.json());
 
-// Default route
+// =======================
+// Default Route
+// =======================
+
+// Basic health check route to verify the API is running
 app.get('/', (req, res) => {
   res.send('LHB App API running...');
 });
 
-// Import routes
+// =======================
+// Route Imports & Mounting
+// =======================
+
+// Import user-related routes (e.g., registration)
 const userRoutes = require('./routes/user.routes');
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes); // Mount user routes at /api/users
 
-// Import KPI routes
+// Import KPI-related routes (e.g., assign KPI)
 const kpiRoutes = require('./routes/kpi.routes');
-app.use('/api/kpis', kpiRoutes);
+app.use('/api/kpis', kpiRoutes); // Mount KPI routes at /api/kpis
 
+// Import authentication routes (e.g., login, register)
+const authRoutes = require('./routes/auth.routes');
+app.use('/api/auth', authRoutes); // Mount auth routes at /api/auth
 
+// =======================
+// Database Connection & Server Startup
+// =======================
 
-// Connect to MongoDB and start server
+// Set the port from environment variable or default to 5000
 const PORT = process.env.PORT || 5000;
-mongoose.connect(process.env.MONGO_URI)
+
+// Connect to MongoDB using the URI from environment variables
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
+    // If connection is successful, start the Express server
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
-  .catch(err => console.error('MongoDB connection failed:', err));
+  .catch((err) => {
+    // If connection fails, log the error
+    console.error('MongoDB connection failed:', err); 
+  });
