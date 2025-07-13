@@ -51,9 +51,8 @@ const registerUser = async (req, res) => {
 };
 
 /**
- * Delete a user (Commander & Commando only).
- * - Commander can delete anyone
- * - Commando can delete everyone except Commander
+ * Commander or Commando deletes a user.
+ * Commander can delete anyone; Commando can't delete Commander.
  */
 const deleteUser = async (req, res) => {
   try {
@@ -85,6 +84,9 @@ const deleteUser = async (req, res) => {
   }
 };
 
+/**
+ * Commander or Commando creates a user manually.
+ */
 const createUserByCommander = async (req, res) => {
   try {
     const { firstName, lastName, email, password, phone, sex, role, battalion } = req.body;
@@ -123,18 +125,48 @@ const createUserByCommander = async (req, res) => {
   }
 };
 
+/**
+ * Get authenticated user profile (for frontend).
+ */
 const getMe = async (req, res) => {
   try {
-    const user = req.user; // Set by authenticate middleware
+    const user = req.user;
     res.json({
-      id: user._id,
+      ...user.toObject(),
       name: `${user.firstName} ${user.lastName}`,
-      email: user.email,
-      role: user.role,
-      battalion: user.battalion,
     });
   } catch (err) {
     console.error('GetMe error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/**
+ * Authenticated user updates their profile.
+ */
+const updateMyProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const updates = { ...req.body };
+
+    // ❗️OPTIONAL: Prevent update of protected fields
+    delete updates.role;
+    delete updates.password;
+    delete updates.email; // if you don't want users changing their email
+
+    const user = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({
+      ...user.toObject(),
+      name: `${user.firstName} ${user.lastName}`,
+    });
+  } catch (err) {
+    console.error('Update Profile Error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -143,5 +175,6 @@ module.exports = {
   registerUser,
   deleteUser,
   createUserByCommander,
-  getMe
+  getMe,
+  updateMyProfile,
 };

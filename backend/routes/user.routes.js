@@ -4,15 +4,20 @@ const router = express.Router();
 const {
   createUserByCommander,
   deleteUser,
-  getMe
+  getMe,
+  updateMyProfile,
 } = require('../controllers/user.controller');
+
 const { authenticate } = require('../middleware/auth.middleware');
 const { authorizeRoles } = require('../middleware/role.middleware');
 
-// Authenticated user profile (needed by frontend)
+// GET: Authenticated user profile
 router.get('/me', authenticate, getMe);
 
-// Commander or Commando can create users
+// PUT: Update own profile
+router.put('/profile', authenticate, updateMyProfile);
+
+// POST: Commander or Commando can create users
 router.post(
   '/create',
   authenticate,
@@ -20,7 +25,7 @@ router.post(
   createUserByCommander
 );
 
-// Commander or Commando can delete users
+// DELETE: Commander or Commando can delete users
 router.delete(
   '/:id',
   authenticate,

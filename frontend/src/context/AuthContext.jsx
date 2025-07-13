@@ -1,8 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Create an AuthContext to manage authentication state
-// This context will provide user information, token, and authentication methods
+// Create the AuthContext
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -11,19 +10,39 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get('/api/users/me') // Replace with actual user info endpoint if available
-        .then(res => setUser(res.data))
-        .catch(() => logout());
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (storedToken) {
+      setToken(storedToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+
+      if (storedUser) {
+        setUser(JSON.parse(storedUser)); // ✅ restore user from localStorage
+        setLoading(false);
+      } else {
+        axios
+          .get('/api/users/me')
+          .then((res) => {
+            setUser(res.data);
+            localStorage.setItem('user', JSON.stringify(res.data));
+            setLoading(false);
+          })
+          .catch(() => {
+            logout();
+            setLoading(false);
+          });
+      }
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [token]);
+  }, []);
 
   const login = (userData, jwt) => {
     setUser(userData);
     setToken(jwt);
     localStorage.setItem('token', jwt);
+    localStorage.setItem('user', JSON.stringify(userData));
     axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
   };
 
@@ -31,11 +50,12 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     delete axios.defaults.headers.common['Authorization'];
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, setUser, token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
