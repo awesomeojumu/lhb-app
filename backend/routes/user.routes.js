@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser } = require('../controllers/user.controller');
 
-/**
- * User Routes
- * 
- * This file defines the routes for user management.
- * Each route delegates its logic to the corresponding controller function.
- */
+const { authenticate } = require('../middleware/auth.middleware');
+const { authorizeRoles } = require('../middleware/role.middleware');
+const { createUserByCommander, deleteUser } = require('../controllers/user.controller');
 
-// Route for registering a new user
-// POST /api/users/register
-// Expects user details in the request body (e.g., firstName, lastName, email, password, etc.)
-// Calls the registerUser controller to handle registration logic
-router.post('/register', registerUser);
+// Commander or Commando can create users
+router.post(
+  '/create',
+  authenticate,
+  authorizeRoles('commander', 'commando'),
+  createUserByCommander
+);
 
-module.exports = router; // Export the router to be used in the main app file
+// Commander or Commando can delete users
+router.delete('/:id', authenticate, authorizeRoles('commander', 'commando'), deleteUser);
+
+module.exports = router;
