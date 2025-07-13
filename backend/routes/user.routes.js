@@ -15,7 +15,7 @@ const { authorizeRoles } = require('../middleware/role.middleware');
 router.get('/me', authenticate, getMe);
 
 // PUT: Update own profile
-router.put('/profile', authenticate, updateMyProfile);
+router.put('/me', authenticate, updateMyProfile);
 
 // POST: Commander or Commando can create users
 router.post(
