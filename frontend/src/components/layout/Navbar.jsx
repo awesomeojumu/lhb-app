@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext'; // ✅ Corrected path
+import React, { useState } from 'react';
 import {
   AppBar,
   Box,
@@ -15,24 +14,12 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuIcon from '@mui/icons-material/Menu';
-import logo from "../../assets/logo.jpg";
 
+import { getInitials } from '../../utils/stringHelpers';
 
-
-const Navbar = ({ toggleSidebar }) => {
-  const { user } = useContext(AuthContext); // ✅ Access user from context
+const Navbar = ({ toggleSidebar, user, logo, appName = 'Dashboard' }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
-  const getInitials = (name) =>
-    name
-      ? name
-          .split(' ')
-          .map((n) => n[0])
-          .join('')
-          .toUpperCase()
-          .slice(0, 2)
-      : '';
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
@@ -60,9 +47,9 @@ const Navbar = ({ toggleSidebar }) => {
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <img src={logo} alt="LHB Logo" style={{ height: 40 }} />
+            {logo && <img src={logo} alt="Logo" style={{ height: 40 }} />}
             <Typography variant="h6" sx={{ display: { xs: 'none', sm: 'block' } }}>
-              LHB Dashboard
+              {appName}
             </Typography>
           </Box>
         </Box>
@@ -84,9 +71,11 @@ const Navbar = ({ toggleSidebar }) => {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <Box sx={{ px: 2, py: 1 }}>
-              <Typography fontWeight="bold">{user?.firstName || 'Soldier'}!</Typography>
+              <Typography fontWeight="bold">
+                {user?.firstName || user?.name || 'Welcome'}
+              </Typography>
               <Typography variant="body2" color="text.secondary">
-                {user?.role || 'Role'}
+                {user?.role?.toUpperCase() || 'Member'}
               </Typography>
             </Box>
             <Divider />
