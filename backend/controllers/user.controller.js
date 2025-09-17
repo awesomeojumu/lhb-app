@@ -166,6 +166,11 @@ const getDashboardData = async (req, res) => {
     const KPI = require('../models/KPI');
     const KPIStatus = require('../models/KPIStatus');
 
+    // Get battalion user IDs first (needed for the KPI status query)
+    const battalionUserIds = userBattalion 
+      ? await User.find({ battalion: userBattalion }).distinct('_id')
+      : [];
+
     // Get all data in parallel for maximum speed
     const [
       // User's KPIs
@@ -195,9 +200,9 @@ const getDashboardData = async (req, res) => {
         : [],
       
       // Battalion KPI statuses for aggregation
-      userBattalion 
+      userBattalion && battalionUserIds.length > 0
         ? KPIStatus.find({ 
-            user: { $in: await User.find({ battalion: userBattalion }).distinct('_id') }
+            user: { $in: battalionUserIds }
           })
           .populate('kpi', 'title description deadline assignedTo')
           .populate('user', 'firstName lastName role')
