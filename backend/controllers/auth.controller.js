@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { generateLhbCode } = require('../utils/lhbCodeGenerator');
 
 /**
  * Helper function to generate a JWT token for a user.
@@ -33,7 +34,10 @@ const registerUser = async (req, res) => {
     // 2. Hash the password using bcrypt for security
     const hashed = await bcrypt.hash(password, 10);
 
-    // 3. Create the user in the database
+    // 3. Generate LHB code
+    const lhbCode = await generateLhbCode();
+
+    // 4. Create the user in the database
     const user = await User.create({
       firstName,
       lastName,
@@ -43,20 +47,21 @@ const registerUser = async (req, res) => {
       sex,
       role,
       battalion,
+      lhbCode,
     });
 
-    // 4. Generate a JWT token for the new user
+    // 5. Generate a JWT token for the new user
     const token = generateToken(user);
 
-    // 5. Respond with user info (excluding sensitive data) and token
+    // 6. Respond with user info (excluding sensitive data) and token
     res.status(201).json({
-      user: {
-        id: user._id,
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.email,
-        role: user.role,
-        battalion: user.battalion,
-      },
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      battalion: user.battalion,
+      lhbCode: user.lhbCode,
       token,
     });
   } catch (err) {
@@ -91,13 +96,12 @@ const loginUser = async (req, res) => {
 
     // 4. Respond with user info (excluding sensitive data) and token
     res.status(200).json({
-      user: {
-        id: user._id,
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.email,
-        role: user.role,
-        battalion: user.battalion,
-      },
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      battalion: user.battalion,
       token,
     });
   } catch (err) {

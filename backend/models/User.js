@@ -34,7 +34,7 @@ const mongoose = require('mongoose');
  * - hasVoterCard:        Whether user has a voter card (boolean).
  * - hasPassport:         Whether user has a passport (boolean).
  * - hasDriversLicense:   Whether user has a driver's license (boolean).
- * - role:                User's role in the system (enum, default: 'soldier').
+ * - role:                User's role in the system (enum, default: 'globalSoldier').
  * - password:            Hashed password (required).
  * - createdAt:           Timestamp for when the user was created (defaults to now).
  */
@@ -98,9 +98,15 @@ const userSchema = new mongoose.Schema({
 
   role: {
     type: String,
-    enum: ['commander', 'commando', 'special_force', 'soldier'],
-    default: 'soldier',
+    enum: ['commander', 'commando', 'specialForce', 'globalSoldier'],
+    default: 'globalSoldier',
   }, // User's role in the system
+
+  status: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active',
+  }, // User's account status
 
   password: { type: String, required: true }, // Hashed password
   createdAt: { type: Date, default: Date.now }, // Creation timestamp

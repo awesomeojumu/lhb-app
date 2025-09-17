@@ -31,6 +31,12 @@ const kpiStatusSchema = new mongoose.Schema(
       enum: ['pending', 'in_progress', 'done'], // Allowed status values
       default: 'pending', // Default status is 'pending'
     },
+    progress: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0,
+    },
     markedAt: Date, // Timestamp when the status was last updated/marked
   },
   {
