@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 /**
  * User Schema
@@ -46,19 +46,19 @@ const userSchema = new mongoose.Schema({
   sex: { type: String, enum: ['Male', 'Female'] }, // Gender
   ageBracket: {
     type: String,
-    enum: ['18-25', '26-35', '36-45', '46-60', '60+'],
+    enum: ['18-25', '26-35', '36-45', '46-60', '60+']
   }, // Age group
   dateOfBirth: Date, // Optional date of birth
 
   battalion: {
     type: String,
-    enum: ['Alpha', 'Bravo', 'Charlie', 'Delta'],
+    enum: ['Alpha', 'Bravo', 'Charlie', 'Delta']
   }, // Battalion assignment
   lhbCode: String, // Unique code for the user
 
   relationshipStatus: {
     type: String,
-    enum: ['Single', 'Engaged', 'Married'],
+    enum: ['Single', 'Engaged', 'Married']
   }, // Marital status
   weddingAnniversary: Date, // Optional wedding anniversary
 
@@ -68,23 +68,23 @@ const userSchema = new mongoose.Schema({
   personalityType: String, // Optional personality type
   fiveFoldGift: {
     type: String,
-    enum: ['Apostle', 'Pastor', 'Evangelist', 'Teacher', 'Prophet'],
+    enum: ['Apostle', 'Pastor', 'Evangelist', 'Teacher', 'Prophet']
   }, // Spiritual gift
   leadershipRoles: [String], // Array of leadership roles
 
   education: {
     type: String,
-    enum: ['SSCE', 'OND', 'HND', 'Bachelors', 'Masters', 'PhD'],
+    enum: ['SSCE', 'OND', 'HND', 'Bachelors', 'Masters', 'PhD']
   }, // Education level
   jobStatus: {
     type: String,
-    enum: ['Employed', 'Self Employed', 'Contract', 'Unemployed'],
+    enum: ['Employed', 'Self Employed', 'Contract', 'Unemployed']
   }, // Employment status
   incomeRange: { type: String }, // Optional income range
 
   purposeStatus: {
     type: String,
-    enum: ['Discovered', 'Not Yet Discovered', 'In Progress'],
+    enum: ['Discovered', 'Not Yet Discovered', 'In Progress']
   }, // Purpose discovery status
   primaryMountain: String, // Primary mountain of influence
   secondaryMountain: String, // Secondary mountain of influence
@@ -99,17 +99,25 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['commander', 'commando', 'specialForce', 'globalSoldier'],
-    default: 'globalSoldier',
+    default: 'globalSoldier'
   }, // User's role in the system
 
   status: {
     type: String,
     enum: ['active', 'inactive'],
-    default: 'active',
+    default: 'active'
   }, // User's account status
 
-  password: { type: String, required: true }, // Hashed password
-  createdAt: { type: Date, default: Date.now }, // Creation timestamp
-});
+  // Onboarding fields
+  onboardingCompleted: {
+    type: Boolean,
+    default: false,
+    index: true
+  }, // Whether user has completed onboarding
+  onboardingCompletedAt: Date, // When onboarding was completed
 
-module.exports = mongoose.model('User', userSchema); // Export the User model for use in other parts of the application
+  password: { type: String, required: true }, // Hashed password
+  createdAt: { type: Date, default: Date.now } // Creation timestamp
+})
+
+module.exports = mongoose.model('User', userSchema) // Export the User model for use in other parts of the application

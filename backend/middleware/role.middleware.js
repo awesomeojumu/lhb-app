@@ -12,18 +12,18 @@
 const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     // Get the user's role from the authenticated user object (set by auth middleware)
-    const userRole = req.user?.role;
+    const userRole = req.user?.role
 
     // Check if the user's role exists and is included in the allowed roles
     if (!userRole || !allowedRoles.includes(userRole)) {
-      return res.status(403).json({ message: 'Access denied: insufficient permissions' });
+      return res.status(403).json({ message: 'Access denied: insufficient permissions' })
     }
 
     // User has the required role, proceed to the next middleware or route handler
-    next();
-  };
-};
+    next()
+  }
+}
 
 module.exports = {
-  authorizeRoles,
-};
+  authorizeRoles
+}

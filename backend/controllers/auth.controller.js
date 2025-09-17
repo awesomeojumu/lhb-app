@@ -1,7 +1,7 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const { generateLhbCode } = require('../utils/lhbCodeGenerator');
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const User = require('../models/User')
+const { generateLhbCode } = require('../utils/lhbCodeGenerator')
 
 /**
  * Helper function to generate a JWT token for a user.
@@ -11,8 +11,8 @@ const { generateLhbCode } = require('../utils/lhbCodeGenerator');
  * @returns {string} - Signed JWT token
  */
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-};
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' })
+}
 
 /**
  * Controller for registering a new user.
@@ -25,17 +25,17 @@ const generateToken = (user) => {
  */
 const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, phone, sex, role, battalion } = req.body;
+    const { firstName, lastName, email, password, phone, sex, role, battalion } = req.body
 
     // 1. Check if user already exists by email
-    const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: 'User already exists' });
+    const existing = await User.findOne({ email })
+    if (existing) { return res.status(400).json({ message: 'User already exists' }) }
 
     // 2. Hash the password using bcrypt for security
-    const hashed = await bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(password, 10)
 
     // 3. Generate LHB code
-    const lhbCode = await generateLhbCode();
+    const lhbCode = await generateLhbCode()
 
     // 4. Create the user in the database
     const user = await User.create({
@@ -47,11 +47,11 @@ const registerUser = async (req, res) => {
       sex,
       role,
       battalion,
-      lhbCode,
-    });
+      lhbCode
+    })
 
     // 5. Generate a JWT token for the new user
-    const token = generateToken(user);
+    const token = generateToken(user)
 
     // 6. Respond with user info (excluding sensitive data) and token
     res.status(201).json({
@@ -62,14 +62,14 @@ const registerUser = async (req, res) => {
       role: user.role,
       battalion: user.battalion,
       lhbCode: user.lhbCode,
-      token,
-    });
+      token
+    })
   } catch (err) {
     // Log and respond with a server error if registration fails
-    console.error('Register Error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Register Error:', err)
+    res.status(500).json({ message: 'Server error' })
   }
-};
+}
 
 /**
  * Controller for logging in a user.
@@ -81,20 +81,27 @@ const registerUser = async (req, res) => {
  */
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     // 1. Find user by email
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Username or Passsword is incorrect' });
+    const user = await User.findOne({ email })
+    if (!user) { return res.status(400).json({ message: 'Username or Password is incorrect' }) }
 
-    // 2. Compare the provided password with the stored hashed password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Username or Passsword is incorrect' });
+    // 2. Check if user account is active
+    if (user.status !== 'active') {
+      return res.status(403).json({
+        message: 'Account is deactivated. Please contact your administrator for assistance.'
+      })
+    }
 
-    // 3. Generate a JWT token for the user
-    const token = generateToken(user);
+    // 3. Compare the provided password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) { return res.status(400).json({ message: 'Username or Password is incorrect' }) }
 
-    // 4. Respond with user info (excluding sensitive data) and token
+    // 4. Generate a JWT token for the user
+    const token = generateToken(user)
+
+    // 5. Respond with user info (excluding sensitive data) and token
     res.status(200).json({
       _id: user._id,
       firstName: user.firstName,
@@ -102,16 +109,17 @@ const loginUser = async (req, res) => {
       email: user.email,
       role: user.role,
       battalion: user.battalion,
-      token,
-    });
+      status: user.status,
+      token
+    })
   } catch (err) {
     // Log and respond with a server error if login fails
-    console.error('Login Error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login Error:', err)
+    res.status(500).json({ message: 'Server error' })
   }
-};
+}
 
 module.exports = {
   registerUser,
-  loginUser,
-};
+  loginUser
+}

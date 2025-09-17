@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const jwt = require('jsonwebtoken')
+const User = require('../models/User')
 
 /**
  * Middleware to authenticate requests using JWT tokens.
@@ -14,33 +14,32 @@ const User = require('../models/User');
  * This middleware should be used on routes that require authentication.
  */
 const authenticate = async (req, res, next) => {
-  // Get the Authorization header from the request
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization
 
-  // Check if the header exists and starts with 'Bearer '
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized: No token' });
+    return res.status(401).json({ message: 'Unauthorized: No token' })
   }
 
-  // Extract the token from the header (format: 'Bearer <token>')
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1]
 
   try {
-    // Verify the token using the JWT secret
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = await User.findById(decoded.id).select('-password')
 
-    // Find the user by ID from the decoded token, exclude the password field
-    req.user = await User.findById(decoded.id).select('-password');
+    //  ADD THIS: Check if user is still active
+    if (!req.user || req.user.status !== 'active') {
+      return res.status(401).json({
+        message: 'Account deactivated. Please contact your battalion commander.'
+      })
+    }
 
-    // Proceed to the next middleware or route handler
-    next();
+    next()
   } catch (err) {
-    // If verification fails, log the error and respond with 401 Unauthorized
-    console.error('Auth error:', err.message);
-    res.status(401).json({ message: 'Unauthorized: Invalid token' });
+    console.error('Auth error:', err.message)
+    res.status(401).json({ message: 'Unauthorized: Invalid token' })
   }
-};
+}
 
 module.exports = {
-  authenticate,
-};
+  authenticate
+}

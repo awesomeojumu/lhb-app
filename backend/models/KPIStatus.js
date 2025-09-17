@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 /**
  * KPIStatus Schema
@@ -19,29 +19,29 @@ const kpiStatusSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: true
     }, // Reference to the user assigned this KPI
     kpi: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'KPI',
-      required: true,
+      required: true
     }, // Reference to the KPI being tracked
     status: {
       type: String,
       enum: ['pending', 'in_progress', 'done'], // Allowed status values
-      default: 'pending', // Default status is 'pending'
+      default: 'pending' // Default status is 'pending'
     },
     progress: {
       type: Number,
       min: 0,
       max: 100,
-      default: 0,
+      default: 0
     },
-    markedAt: Date, // Timestamp when the status was last updated/marked
+    markedAt: Date // Timestamp when the status was last updated/marked
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
-  },
-);
+    timestamps: true // Automatically adds createdAt and updatedAt fields
+  }
+)
 
-module.exports = mongoose.model('KPIStatus', kpiStatusSchema); // Export the model for use in other parts of the application
+module.exports = mongoose.model('KPIStatus', kpiStatusSchema) // Export the model for use in other parts of the application
